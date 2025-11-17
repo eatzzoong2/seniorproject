@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<title>생년월일 선택</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<style>
+  :root{
+    color-scheme: light dark;
+  }
+  *{ box-sizing:border-box; }
+
+  html,body{
+    margin:0;
+    padding:0;
+  }
+
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+    background:#282828;
+  }
+
+  /* 전체 화면: 사파리 URL/홈바 제외 실제 화면 높이 기준 */
+  .app{
+    min-height:100dvh;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    background:#2f2f33;
+  }
+
+  .header{
+    width:100%;
+    padding:14px 16px;
+    text-align:center;
+    color:#f9fafb;
+    font-size:16px;
+    font-weight:600;
+  }
+
+  /* 가운데 카드 모달 */
+  .picker-wrap{
+    flex:1;
+    width:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+  }
+
+  .picker-card{
+    width:320px;
+    max-width:90%;
+    background:#ffffff;
+    border-radius:18px;
+    padding:24px 18px;
+    box-shadow:0 20px 40px rgba(0,0,0,0.35);
+    position:relative;
+  }
+
+  .picker-title{
+    text-align:center;
+    margin-bottom:18px;
+    font-size:15px;
+    color:#4b5563;
+  }
+
+  .picker{
+    display:flex;
+    gap:8px;
+    position:relative;
+  }
+
+  /* 선택 영역 하이라이트 박스 */
+  .picker-highlight{
+    position:absolute;
+    left:0;
+    right:0;
+    top:50%;
+    transform:translateY(-50%);
+    height:40px;
+    pointer-events:none;
+    border-radius:12px;
+    box-shadow:0 0 0 1px #e5e7eb, 0 8px 16px rgba(15,23,42,0.08);
+  }
+
+  .column{
+    flex:1;
+    position:relative;
+    height:160px; /* 3~4개 아이템 보이도록 */
+    overflow-y:auto;
+    scrollbar-width:none;     /* Firefox */
+    -ms-overflow-style:none;  /* IE/Edge */
+  }
+  .column::-webkit-scrollbar{ display:none; }
+
+  .item{
+    height:40px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:16px;
+    color:#d1d5db;
+  }
+
+  .item span.number{
+    min-width:3ch;
+    text-align:right;
+    margin-right:3px;
+  }
+  .item span.unit{
+    font-size:13px;
+    color:#9ca3af;
+  }
+
+  .item.active{
+    color:#111827;
+    font-weight:700;
+  }
+  .item.active span.unit{
+    color:#4b5563;
+  }
+
+  .footer{
+    width:100%;
+    text-align:center;
+    padding:10px 0 16px;
+    font-size:12px;
+    color:#9ca3af;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="header">회원가입</div>
+
+  <div class="picker-wrap">
+    <div class="picker-card">
+      <div class="picker-title">생년월일 선택</div>
+      <div class="picker">
+        <div class="picker-highlight"></div>
+
+        <div class="column" id="yearCol"></div>
+        <div class="column" id="monthCol"></div>
+        <div class="column" id="dayCol"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    가운데 줄에 맞춘 값이 선택된 날짜임
+  </div>
+
+</div>
+
+<script>
+  const ITEM_HEIGHT = 40;
+
+  const yearCol  = document.getElementById('yearCol');
+  const monthCol = document.getElementById('monthCol');
+  const dayCol   = document.getElementById('dayCol');
+
+  // 연도: 1980~2010 예시 (원하면 바꾸면 됨)
+  for(let y=1988; y<=1996; y++){
+    yearCol.appendChild(makeItem(y, '년'));
+  }
+  // 월
+  for(let m=1; m<=12; m++){
+    monthCol.appendChild(makeItem(m, '월'));
+  }
+  // 일
+  for(let d=1; d<=31; d++){
+    dayCol.appendChild(makeItem(d, '일'));
+  }
+
+  function makeItem(num, unit){
+    const div = document.createElement('div');
+    div.className = 'item';
+    const spanNum = document.createElement('span');
+    spanNum.className = 'number';
+    spanNum.textContent = String(num).padStart(2,'0');
+    const spanUnit = document.createElement('span');
+    spanUnit.className = 'unit';
+    spanUnit.textContent = unit;
+    div.appendChild(spanNum);
+    div.appendChild(spanUnit);
+    return div;
+  }
+
+  // 중앙 인덱스 찾아서 스크롤 위치를 그리드에 맞게 스냅
+  function setupColumn(col){
+    // 중앙에 적당한 값으로 맞춰주기 (두 번째 값)
+    col.scrollTop = ITEM_HEIGHT; 
+
+    let scrollTimer = null;
+
+    const applyActive = () => {
+      const index = Math.round(col.scrollTop / ITEM_HEIGHT);
+      const targetTop = index * ITEM_HEIGHT;
+      col.scrollTo({ top: targetTop, behavior:'smooth' });
+
+      [...col.children].forEach((child, i)=>{
+        child.classList.toggle('active', i === index);
+      });
+    };
+
+    col.addEventListener('scroll', () => {
+      if(scrollTimer) clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(applyActive, 80);
+    });
+
+    // 초기 active 세팅
+    applyActive();
+  }
+
+  [yearCol, monthCol, dayCol].forEach(setupColumn);
+</script>
+</body>
+</html>
