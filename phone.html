@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<title>iPhone Screen UI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    background: #111217;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* iPhone 화면 사이즈 고정 */
+  .iphone-screen {
+    width: 390px;
+    height: 844px;
+    background: #f8fafc;
+    border-radius: 32px;
+    overflow: hidden;
+    box-shadow: 0 0 0 12px #000, 0 20px 50px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .header {
+    padding: 16px;
+    border-bottom: 1px solid #e5e7eb;
+    text-align: center;
+    font-size: 17px;
+    font-weight: 600;
+    background: #fff;
+  }
+
+  .content {
+    padding: 20px;
+    flex: 1;
+    background: #f8fafc;
+  }
+
+  label {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .input-box {
+    margin-top: 8px;
+    border: 1px solid #d4d8e0;
+    border-radius: 10px;
+    padding: 12px;
+    background: white;
+  }
+
+  input {
+    width: 100%;
+    border: none;
+    font-size: 18px;
+    outline: none;
+  }
+
+  .keypad {
+    padding: 20px;
+    background: #151922;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+
+  .key {
+    height: 70px;
+    background: #2a3140;
+    border-radius: 10px;
+    color: white;
+    font-size: 22px;
+    border: none;
+  }
+
+  .key:active {
+    background: #3a4252;
+    transform: scale(0.96);
+  }
+</style>
+</head>
+
+<body>
+<div class="iphone-screen">
+
+  <div class="header">회원가입</div>
+
+  <div class="content">
+    <label>생년월일</label>
+    <div class="input-box">
+      <input id="birth" type="text" maxlength="8" readonly placeholder="YYYYMMDD" />
+    </div>
+  </div>
+
+  <div class="keypad">
+    <div class="grid">
+      <button class="key" data-num="1">1</button>
+      <button class="key" data-num="2">2</button>
+      <button class="key" data-num="3">3</button>
+      <button class="key" data-num="4">4</button>
+      <button class="key" data-num="5">5</button>
+      <button class="key" data-num="6">6</button>
+      <button class="key" data-num="7">7</button>
+      <button class="key" data-num="8">8</button>
+      <button class="key" data-num="9">9</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const input = document.getElementById("birth");
+  document.querySelectorAll(".key").forEach(btn => {
+    btn.addEventListener("click", () => {
+      if (input.value.length < 8) {
+        input.value += btn.dataset.num;
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
