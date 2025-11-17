@@ -2,116 +2,148 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
-<title>iPhone Screen UI</title>
+<title>생년월일 입력</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 <style>
-  body {
-    margin: 0;
-    height: 100vh;
-    background: #111217;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  :root{
+    color-scheme: light dark; /* 다크모드에서도 자연스럽게 */
   }
 
-  /* iPhone 화면 사이즈 고정 */
-  .iphone-screen {
-    width: 390px;
-    height: 844px;
-    background: #f8fafc;
-    border-radius: 32px;
-    overflow: hidden;
-    box-shadow: 0 0 0 12px #000, 0 20px 50px rgba(0,0,0,0.5);
-    display: flex;
-    flex-direction: column;
+  *{ box-sizing:border-box; }
+
+  html, body{
+    margin:0;
+    padding:0;
   }
 
-  .header {
-    padding: 16px;
-    border-bottom: 1px solid #e5e7eb;
-    text-align: center;
-    font-size: 17px;
-    font-weight: 600;
-    background: #fff;
+  body{
+    font-family:-apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    background:#111217;
   }
 
-  .content {
-    padding: 20px;
-    flex: 1;
-    background: #f8fafc;
+  /* 전체 앱 래퍼: 실제 보이는 화면 높이에 딱 맞춤 */
+  .app{
+    min-height:100dvh;               /* 사파리 주소창 제외한 실제 뷰포트 높이 */
+    display:flex;
+    flex-direction:column;
+    background:#f4f6fa;
   }
 
-  label {
-    font-size: 14px;
-    font-weight: 600;
+  /* 위쪽 입력 영역 */
+  .content{
+    padding:20px 20px 16px;
   }
 
-  .input-box {
-    margin-top: 8px;
-    border: 1px solid #d4d8e0;
-    border-radius: 10px;
-    padding: 12px;
-    background: white;
+  .label{
+    font-size:16px;
+    font-weight:700;
+    margin-bottom:12px;
+    color:#111827;
   }
 
-  input {
-    width: 100%;
-    border: none;
-    font-size: 18px;
-    outline: none;
+  .input-box{
+    border-radius:14px;
+    border:1px solid #d4d8e0;
+    background:#ffffff;
+    padding:16px 18px;
+    box-shadow:0 4px 10px rgba(15,23,42,0.06);
   }
 
-  .keypad {
-    padding: 20px;
-    background: #151922;
+  #birth{
+    width:100%;
+    border:none;
+    outline:none;
+    font-size:22px;
+    letter-spacing:0.12em;
+    color:#111827;
+    background:transparent;
   }
 
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 14px;
+  #birth::placeholder{
+    color:#cbd5e1;
   }
 
-  .key {
-    height: 70px;
-    background: #2a3140;
-    border-radius: 10px;
-    color: white;
-    font-size: 22px;
-    border: none;
+  /* 중간 빈 공간은 flex로 밀어내기 */
+  .spacer{
+    flex:1;
   }
 
-  .key:active {
-    background: #3a4252;
-    transform: scale(0.96);
+  /* 아래 키패드 */
+  .keypad{
+    padding:16px 20px;
+    padding-bottom:calc(16px + env(safe-area-inset-bottom, 0px)); /* 아이폰 홈 인디케이터 여유 */
+    background:#151922;
+    box-shadow:0 -6px 20px rgba(0,0,0,0.35);
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+  }
+
+  .key{
+    height:64px;
+    border-radius:14px;
+    border:none;
+    background:#262d3a;
+    color:#e5e7eb;
+    font-size:22px;
+    font-weight:600;
+    cursor:pointer;
+    transition:transform 0.08s ease, background 0.08s ease, box-shadow 0.08s ease;
+  }
+
+  .key:active{
+    transform:scale(0.96);
+    background:#323948;
+    box-shadow:0 0 0 1px rgba(148,163,184,0.35) inset;
+  }
+
+  .delete-key{
+    font-size:20px;
+    background:#323748;
   }
 </style>
 </head>
-
 <body>
-<div class="iphone-screen">
+<div class="app">
 
-  <div class="header">회원가입</div>
-
+  <!-- 상단 입력 영역 -->
   <div class="content">
-    <label>생년월일</label>
+    <div class="label">생년월일</div>
     <div class="input-box">
       <input id="birth" type="text" maxlength="8" readonly placeholder="YYYYMMDD" />
     </div>
   </div>
 
+  <!-- 중간 빈 공간: 화면 크기에 따라 자동 조절 -->
+  <div class="spacer"></div>
+
+  <!-- 하단 키패드 -->
   <div class="keypad">
     <div class="grid">
       <button class="key" data-num="1">1</button>
       <button class="key" data-num="2">2</button>
       <button class="key" data-num="3">3</button>
+
       <button class="key" data-num="4">4</button>
       <button class="key" data-num="5">5</button>
       <button class="key" data-num="6">6</button>
+
       <button class="key" data-num="7">7</button>
       <button class="key" data-num="8">8</button>
       <button class="key" data-num="9">9</button>
+
+      <!-- 왼쪽 아래 빈칸 -->
+      <div></div>
+
+      <!-- 0 버튼 -->
+      <button class="key" data-num="0">0</button>
+
+      <!-- 삭제 버튼 -->
+      <button class="key delete-key" id="delete">⌫</button>
     </div>
   </div>
 
@@ -119,14 +151,20 @@
 
 <script>
   const input = document.getElementById("birth");
-  document.querySelectorAll(".key").forEach(btn => {
+
+  // 숫자 입력
+  document.querySelectorAll(".key[data-num]").forEach(btn => {
     btn.addEventListener("click", () => {
       if (input.value.length < 8) {
         input.value += btn.dataset.num;
       }
     });
   });
-</script>
 
+  // 한 글자 지우기
+  document.getElementById("delete").addEventListener("click", () => {
+    input.value = input.value.slice(0, -1);
+  });
+</script>
 </body>
 </html>
