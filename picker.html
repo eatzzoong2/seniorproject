@@ -21,7 +21,7 @@
     background:#282828;
   }
 
-  /* 전체 화면: 사파리 URL/홈바 제외 실제 화면 높이 기준 */
+  /* 전체 화면 */
   .app{
     min-height:100dvh;
     padding-top:env(safe-area-inset-top,0px);
@@ -41,7 +41,6 @@
     font-weight:600;
   }
 
-  /* 가운데 카드 모달 */
   .picker-wrap{
     flex:1;
     width:100%;
@@ -55,7 +54,7 @@
     max-width:90%;
     background:#ffffff;
     border-radius:18px;
-    padding:24px 18px;
+    padding:24px 18px 30px;
     box-shadow:0 20px 40px rgba(0,0,0,0.35);
     position:relative;
   }
@@ -73,7 +72,7 @@
     position:relative;
   }
 
-  /* 선택 영역 하이라이트 박스 */
+  /* 가운데 선택 영역 */
   .picker-highlight{
     position:absolute;
     left:0;
@@ -86,13 +85,14 @@
     box-shadow:0 0 0 1px #e5e7eb, 0 8px 16px rgba(15,23,42,0.08);
   }
 
+  /* 여기! 한 컬럼에 5줄 보이게 (5 × 40 = 200px) */
   .column{
     flex:1;
     position:relative;
-    height:160px; /* 3~4개 아이템 보이도록 */
+    height:200px;
     overflow-y:auto;
-    scrollbar-width:none;     /* Firefox */
-    -ms-overflow-style:none;  /* IE/Edge */
+    scrollbar-width:none;
+    -ms-overflow-style:none;
   }
   .column::-webkit-scrollbar{ display:none; }
 
@@ -163,15 +163,13 @@
   const monthCol = document.getElementById('monthCol');
   const dayCol   = document.getElementById('dayCol');
 
-  // 연도: 1980~2010 예시 (원하면 바꾸면 됨)
+  // 연도 범위는 원하는 대로 수정 가능 (예: 1988~1996)
   for(let y=1988; y<=1996; y++){
     yearCol.appendChild(makeItem(y, '년'));
   }
-  // 월
   for(let m=1; m<=12; m++){
     monthCol.appendChild(makeItem(m, '월'));
   }
-  // 일
   for(let d=1; d<=31; d++){
     dayCol.appendChild(makeItem(d, '일'));
   }
@@ -190,10 +188,9 @@
     return div;
   }
 
-  // 중앙 인덱스 찾아서 스크롤 위치를 그리드에 맞게 스냅
   function setupColumn(col){
-    // 중앙에 적당한 값으로 맞춰주기 (두 번째 값)
-    col.scrollTop = ITEM_HEIGHT; 
+    // ⭐ 처음에 3번째 줄(인덱스 2)이 가운데 오도록 스크롤
+    col.scrollTop = ITEM_HEIGHT * 2;
 
     let scrollTimer = null;
 
@@ -212,7 +209,6 @@
       scrollTimer = setTimeout(applyActive, 80);
     });
 
-    // 초기 active 세팅
     applyActive();
   }
 
