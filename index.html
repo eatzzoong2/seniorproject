@@ -7,7 +7,7 @@
 
 <style>
   :root{
-    color-scheme: light dark; /* 다크모드에서도 자연스럽게 */
+    color-scheme: light dark;
   }
 
   *{ box-sizing:border-box; }
@@ -22,17 +22,17 @@
     background:#111217;
   }
 
-  /* 전체 앱 래퍼: 실제 보이는 화면 높이에 딱 맞춤 */
+  /* 전체 앱 화면 */
   .app{
-    min-height:100dvh;               /* 사파리 주소창 제외한 실제 뷰포트 높이 */
+    min-height:100dvh;
     display:flex;
     flex-direction:column;
     background:#f4f6fa;
   }
 
-  /* 위쪽 입력 영역 */
+  /* 입력 박스 영역 */
   .content{
-    padding:20px 20px 16px;
+    padding:20px 20px 10px;
   }
 
   .label{
@@ -64,7 +64,6 @@
     color:#cbd5e1;
   }
 
-  /* 중간 빈 공간은 flex로 밀어내기 */
   .spacer{
     flex:1;
   }
@@ -72,7 +71,7 @@
   /* 아래 키패드 */
   .keypad{
     padding:16px 20px;
-    padding-bottom:calc(16px + env(safe-area-inset-bottom, 0px)); /* 아이폰 홈 인디케이터 여유 */
+    padding-bottom:calc(16px + env(safe-area-inset-bottom, 0px));
     background:#151922;
     box-shadow:0 -6px 20px rgba(0,0,0,0.35);
   }
@@ -92,13 +91,12 @@
     font-size:22px;
     font-weight:600;
     cursor:pointer;
-    transition:transform 0.08s ease, background 0.08s ease, box-shadow 0.08s ease;
+    transition:transform 0.08s ease, background 0.08s ease;
   }
 
   .key:active{
     transform:scale(0.96);
     background:#323948;
-    box-shadow:0 0 0 1px rgba(148,163,184,0.35) inset;
   }
 
   .delete-key{
@@ -110,7 +108,6 @@
 <body>
 <div class="app">
 
-  <!-- 상단 입력 영역 -->
   <div class="content">
     <div class="label">생년월일</div>
     <div class="input-box">
@@ -118,12 +115,11 @@
     </div>
   </div>
 
-  <!-- 중간 빈 공간: 화면 크기에 따라 자동 조절 -->
   <div class="spacer"></div>
 
-  <!-- 하단 키패드 -->
   <div class="keypad">
     <div class="grid">
+
       <button class="key" data-num="1">1</button>
       <button class="key" data-num="2">2</button>
       <button class="key" data-num="3">3</button>
@@ -136,14 +132,13 @@
       <button class="key" data-num="8">8</button>
       <button class="key" data-num="9">9</button>
 
-      <!-- 왼쪽 아래 빈칸 -->
       <div></div>
 
-      <!-- 0 버튼 -->
       <button class="key" data-num="0">0</button>
 
-      <!-- 삭제 버튼 -->
+      <!-- ✔ 지우기 버튼 -->
       <button class="key delete-key" id="delete">⌫</button>
+
     </div>
   </div>
 
@@ -152,7 +147,7 @@
 <script>
   const input = document.getElementById("birth");
 
-  // 숫자 입력
+  // 숫자 입력 버튼
   document.querySelectorAll(".key[data-num]").forEach(btn => {
     btn.addEventListener("click", () => {
       if (input.value.length < 8) {
@@ -161,10 +156,11 @@
     });
   });
 
-  // 한 글자 지우기
+  // ✔ 지우기 버튼 기능
   document.getElementById("delete").addEventListener("click", () => {
     input.value = input.value.slice(0, -1);
   });
 </script>
+
 </body>
 </html>
